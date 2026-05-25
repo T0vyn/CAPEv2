@@ -1474,11 +1474,12 @@ function install_systemd() {
     fi
 
     if [ "$USE_UV" = "true" ] || [ "$USE_UV" = "True" ]; then
-        sed -i "s|/etc/poetry/bin/poetry|$PYTHON_MGR|g" /lib/systemd/system/cape*.service
-        sed -i "s|/etc/poetry/bin/poetry|$PYTHON_MGR|g" /lib/systemd/system/guac*.service
         # remove poetry config commands as uv does not have them or needs them
         sed -i "s|^ExecStartPre=.*/poetry .*||g" /lib/systemd/system/cape-fstab.service || true
         sed -i "s|^ExecStartPre=.*/poetry .*||g" /lib/systemd/system/cape-rooter.service || true
+        # Poetry path to uv binary
+        sed -i "s|/etc/poetry/bin/poetry|$PYTHON_MGR|g" /lib/systemd/system/cape*.service
+        sed -i "s|/etc/poetry/bin/poetry|$PYTHON_MGR|g" /lib/systemd/system/guac*.service
     fi
 
     systemctl daemon-reload
