@@ -806,7 +806,7 @@ function install_yara_python() {
     # Install from PyPI
     if [ "$USE_UV" = "true" ] || [ "$USE_UV" = "True" ]; then
         sudo -u ${USER} bash -c "cd $CAPE_ROOT && $PYTHON_MGR pip install yara-python \
-            --no-binary :all: \
+            --no-binary yara-python \
             --config-settings=\"--global-option=build\" \
             --config-settings=\"--global-option=--enable-cuckoo\" \
             --config-settings=\"--global-option=--enable-magic\" \
@@ -1380,6 +1380,12 @@ function install_CAPE() {
         echo "[-] pyproject.toml not found in $CAPE_ROOT"
         return
     fi
+    
+        if [ "$USE_UV" = "true" ] || [ "$USE_UV" = "True" ]; then
+        echo "[+] creating venv"
+        sudo -u ${USER} bash -c "cd $CAPE_ROOT && $PYTHON_MGR venv"
+    fi
+
     sudo -u ${USER} bash -c "export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring; CRYPTOGRAPHY_DONT_BUILD_RUST=1 $PYTHON_MGR pip install -r pyproject.toml"
 
     if [ "$DISABLE_LIBVIRT" -eq 0 ]; then
